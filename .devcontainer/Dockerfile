@@ -16,3 +16,6 @@ ADD https://hashicorp-releases.yandexcloud.net/terraform/${TERRAFORM_VERSION}/te
 RUN cd /opt/terraform/ && \
     unzip terraform_${TERRAFORM_VERSION}_linux_${ARCH}.zip && \
     install /opt/terraform/terraform /usr/bin/terraform
+
+ENV TF_CLI_CONFIG_FILE=/terraform.conf.d/terraform.tfrc
+COPY terraform.conf.d/ /terraform.conf.d/

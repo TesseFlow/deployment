@@ -35,3 +35,7 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+.devcontainer/terraform.conf.d/*
+!.devcontainer/terraform.conf.d/
+!.devcontainer/terraform.conf.d/.gitkeep
