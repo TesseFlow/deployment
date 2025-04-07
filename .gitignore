@@ -36,6 +36,9 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-.devcontainer/terraform.conf.d/*
-!.devcontainer/terraform.conf.d/
-!.devcontainer/terraform.conf.d/.gitkeep
+# Additiononal devcontainer files
+.devcontainer/terraform.d/*
+!.devcontainer/terraform.d/
+!.devcontainer/terraform.d/.gitkeep
+.devcontainer/.ssh/*
+!.devcontainer/.ssh/.gitkeep

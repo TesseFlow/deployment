@@ -1,11 +1,16 @@
-FROM mcr.microsoft.com/devcontainers/base:alpine-3.20
+FROM mcr.microsoft.com/devcontainers/base:bookworm
 
+ARG USER=vscode
 ARG TERRAFORM_VERSION=1.11.3
 ARG ANSIBLE_VERSION=11.4.0
 ARG ARCH=amd64
 
-RUN apk add --update --no-cache python3 unzip && \
-    python3 -m venv /venv/ansible
+SHELL [ "bash", "-c" ]
+
+RUN apt update -y && \
+    apt install -y python3 python3-venv unzip && \
+    python3 -m venv /venv/ansible && \
+    apt autoremove -y && rm -rf /var/lib/apt/lists/*
     
 RUN source /venv/ansible/bin/activate && \ 
     python3 -m ensurepip && \
@@ -17,5 +22,9 @@ RUN cd /opt/terraform/ && \
     unzip terraform_${TERRAFORM_VERSION}_linux_${ARCH}.zip && \
     install /opt/terraform/terraform /usr/bin/terraform
 
-ENV TF_CLI_CONFIG_FILE=/terraform.conf.d/terraform.tfrc
-COPY terraform.conf.d/ /terraform.conf.d/
+USER  $USER
+ENV   HOME=/home/$USER
+
+ENV   TF_CLI_CONFIG_FILE=$HOME/terraform.d/terraform.tfrc
+COPY  terraform.d/ $HOME/terraform.d/
+COPY  .ssh $HOME/.ssh
