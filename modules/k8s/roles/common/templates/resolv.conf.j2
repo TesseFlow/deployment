@@ -1,0 +1,7 @@
+{% for nameserver in common_resolv_conf.nameservers %}
+nameserver {{ nameserver }}
+{% endfor %}
+
+search %{ for domain in common_resolv_conf.search_domains %} {{ domain }} {% endfor %}
+
+ndots: {{ common_resolv_conf.ndots }}

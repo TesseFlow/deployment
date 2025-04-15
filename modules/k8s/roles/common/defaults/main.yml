@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: MIT
+---
+common_resolv_conf:
+  nammeservers:
+    - 8.8.8.8
+  search_domains:
+    - "."
+  ndots: 1
+
+common_disks:
+  - uuid: example
+    scsi:
+      slot: 0
+      id: 0
+    path: /dev/sdb
+    mounts:
+      - path: /mnt/data/kubelet
+        fs: ext4
+        size: 50 GB
+        shared: true
+      - path: /mnt/data/containerd
+        fs: ext4
+        part_start: 50 GB
+        size: 50 GB
+        shared: true
+
+common_components:
+  containerd: "{{ undef(hint='Specify containerd version') }}"
+  kubeadm: stable
+  kubelet: stable
+  kubectl: stable

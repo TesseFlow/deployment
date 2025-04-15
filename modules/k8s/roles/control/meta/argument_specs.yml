@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: MIT
+---
+argument_specs:
+  main:
+    author: whereyourspace
+    short_description: |
+      Control node initialization tasks
+    description: |
+      Control node initialization tasks
+    version_added: "1.0"
+    options:
+      control_plan_endpoint:
+        type: str
+        required: true
+        description: |
+          A stable IP address or DNS name for the control plane
+      control_pod_network_cidr:
+        type: str
+        required: false
+        default: "172.16.0.0/16"
+        description: |
+          Range of IP addresses for the pod network
+      control_etcd_endpoint:
+        type: str
+        required: false
+        default: internal
+        description: |
+          Etcd cluster endpoint. Usage 'internal' for deploy
+          internal etcd database
+      control_workers_group:
+        type: str
+        required: true
+        description: | 
+          The name of the workers group in ansible inventory for the delegation 
+          of some values
+      control_group:
+        type: str
+        required: true
+        description: | 
+          The name of the workers group in ansible inventory for the delegation 
+          of some values

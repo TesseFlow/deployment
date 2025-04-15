@@ -1,0 +1,18 @@
+argument_specs:
+  main:
+    author: whereyourspace
+    short_description: A tasks executed on worker K8S nodes
+    description: | 
+      The role contains takss that run on the remote node
+      and join it as worker to cluster
+    options:
+      worker_token:
+        type: str
+        required: true
+        description: |
+          The token used for authentication on control node
+      worker_control_endpoint:
+        type: str
+        required: true
+        description: |
+          A stable IP address or DNS name of control plane

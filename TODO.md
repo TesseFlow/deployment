@@ -4,8 +4,8 @@
 - [ ] Prepare VMs on follow environments
   - [X] Proxmox VE
   - [ ] Yandex Cloud
-- [ ] Deploy K8S cluster of modes
-  - [ ] Standalone
+- [X] Deploy K8S cluster of modes
+  - [X] Standalone
   - [ ] High availability
 - [ ] Deploy WireGuard gateway
 
@@ -13,6 +13,7 @@
 - [ ] Refine the terraform-proxmox-provider and configurations for correct operration with:
   - [ ] pools
   - [ ] users
+- [ ] GPG-based verification of terraform binaries in devcontainer
 
 # test coverage
 

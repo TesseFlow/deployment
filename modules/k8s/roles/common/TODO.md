@@ -1,0 +1,1 @@
+- [ ] Remove 'part_end' option from common_disks[*].mounts and use only 'size'

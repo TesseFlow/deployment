@@ -1,0 +1,137 @@
+# SPDX-License-Identifier: MIT
+---
+argument_specs:
+  main:
+    author: whereyourspace
+    short_description: A common tasks executed on all K8S nodes
+    description: | 
+      The role contains tasks that run on the remote node 
+      and prepare the node for K8S deployment. It includes 
+      the installation of necessary packages of a certain
+      version, for example: kubeadm, kubelet, etc.
+    version_added: "1.0"
+    options:
+      common_resolv_conf:
+        type: dict
+        required: false
+        default:
+          nameservers:
+            - 8.8.8.8
+          search_domains:
+            - "."
+          ndots: 1
+        description: |
+          The relevant information is written to the local resolv.conf
+        options:
+          common_nameservers:
+            type: list
+            elements: str
+            required: false
+            default:
+              - 8.8.8.8
+            description: |
+              A list of domain name server addresses(IP/DNS) to be added
+              to the resolv.conf file
+          common_search_domains:
+            type: list
+            elements: str
+            required: false
+            default:
+              - "."
+            description: |
+              A list of search domain names(DNS) to be added to the
+              resolv.conf file
+      common_disks:
+        type: list
+        elements: dict
+        required: true
+        description: |
+          Information about formatting and mounting disks in the system. 
+          You can use this to specify the path to the mount directories of
+          some services, such as kubelet and containerd.
+        options:
+          uuid:
+            type: str
+            required: false
+            description: UUID of used disk
+          scsi:
+            type: dict
+            required: false
+            description: SCSI information of used disk
+            options:
+              slot:
+                type: int
+                required: true
+                description: SCSI slot number
+              id:
+                type: int
+                required: true
+                description: SCSI disk id
+          path:
+            type: str
+            required: false
+            description: Path to used disk
+          mounts:
+            type: list
+            elements: dict
+            required: true
+            description: |
+              Information about disk partitions
+            options:
+              path:
+                type: str
+                required: true
+                description: Path where partition will be mounted
+              fs:
+                type: str
+                required: false
+                choices:
+                  - ext4
+                  - ext3
+                  - ext2
+                  - fat
+                default: "ext4"
+              part_start:
+                type: str
+                required: false
+                default: '0'
+                description: |
+                  Where the partition will start as offset from the beginning of the disk. Allowed suffixes: GB, MB, KB
+                  See: https://docs.ansible.com/ansible/latest/collections/community/general/parted_module.html#parameter-part_start
+                  and see: https://docs.ansible.com/ansible/latest/collections/ansible/builtin/human_readable_filter.html
+              size:
+                type: str
+                required: true
+                description: |
+                  Paritition size in human readable formats. Allowed suffixes: GB, MB, KB
+                  See: https://docs.ansible.com/ansible/latest/collections/ansible/builtin/human_readable_filter.html
+              shared:
+                type: bool
+                required: false
+                default: false
+                description: |
+                  If the value is 'true', then this partition will be mounted at startup as a shared
+      common_components:
+        type: dict
+        required: true
+        description: |
+          Versions of the coresponding programs installed on the nodes
+        options:
+          containerd:
+            type: str
+            required: true
+          helm:
+            type: str
+            required: true
+          kubeadm:
+            type: str
+            required: false
+            default: stable
+          kubelet:
+            type: str
+            required: false
+            default: stable
+          kubectl:
+            type: str
+            required: false
+            default: stable

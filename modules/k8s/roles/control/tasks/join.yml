@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Join node to K8S cluster by kubeadm
+  ansible.builtin.command:
+    argv:
+      - "kubeadm"
+      - "join"
+      - "{{ control_plan_endpoint }}"
+      - "--control-plane"
+      - "--token {{ control_k8s_init_token }}"
+      - "--discovery-token-ca-cert-hash {{ control_k8s_token_ca_cert_hash }}"
+  register: kubeadm_result
+  changed_when: kubeadm_result.rc == 0

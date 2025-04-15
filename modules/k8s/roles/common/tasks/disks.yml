@@ -1,0 +1,76 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Get by UUID
+  ansible.builtin.set_fact:
+    disks_by_uuid: |
+      {{
+        disks_by_uuid | default([]) + [{
+          'id': disk_id,
+          'path': '/dev/disk/by-uuid/' + disk.uuid if disk.uuid is defined else omit,
+          'mounts': disk.mounts,
+        }]
+      }}
+  loop: "{{ common_disks }}"
+  loop_control:
+    index_var: disk_id
+    loop_var: disk
+
+- name: Get by absolute path
+  ansible.builtin.set_fact:
+    disks_by_path: |
+      {{
+        disks_by_path | default([]) + [{
+          'id': disk_id,
+          'path': disk.path if disk.path is defined else omit,
+          'mounts': disk.mounts,
+        }]
+      }}
+  loop: "{{ common_disks }}"
+  loop_control:
+    index_var: disk_id
+    loop_var: disk
+
+- name: Merge disks(UUID)
+  ansible.builtin.set_fact:
+    disks: "{{ disks_by_path | community.general.lists_mergeby(disks_by_uuid, 'id') }}"
+
+- name: Generate partition
+  vars:
+    part_start: "{{ item.1.part_start | default('0') | human_to_bytes }}"
+  community.general.parted:
+    device: "{{ item.0.path }}"
+    number: "{{ item.0.id }}"
+    label: gpt
+    fs_type: "{{ item.1.fs }}"
+    part_start: "{{ part_start }}"
+    part_end: "{{ part_start + item.1.size | human_to_bytes }}"
+    unit: B
+    state: present
+  loop: "{{ disks | subelements('mounts') }}"
+
+- name: Generate mounts
+  ansible.posix.mount:
+    boot: true
+    state: mounted
+    opts: defaults
+    fstype: "{{ item.1.fs }}"
+    path: "{{ item.1.path }}"
+    src: "{{ item.0.path }}"
+  loop: "{{ disks | subelements('mounts') }}"
+    
+- name: Create mount directories
+  ansible.builtin.file:
+    path: "{{ item.value }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ common_shared_mounts.values | list }}"
+
+- name: Generate make-shared script
+  vars:
+    shared_mounts: "{{ common_shared_mounts.values | list }}"
+  ansible.builtin.template:
+    src: templates/make-shared.sh.j2
+    dest: /etc/local.d/01-makke-shared.start
+    mode: "0644"
+  notify:
+    - Restart local service

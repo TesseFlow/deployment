@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Initialize control plan components by kubeadm
+  ansible.builtin.command:
+    argv:
+      - "kubeadm"
+      - "init"
+      - "--control-plane-endpoint {{ control_plan_endpoint }}"
+      - "--pod-network-cidr {{ control_pod_network_cidr }}"
+      - "--token {{ control_k8s_init_token }}"
+  register: kubeadm_result
+  changed_when: kubeadm_result.rc == 0

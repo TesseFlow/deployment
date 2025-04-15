@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: MIT
+---
+worker_token: "{{ undef(hint='Specify K8S initialization token') }}"
+worker_control_endpoint: "{{ undef(hint='Specify K8S control plane endpoint') }}"

@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Restart DNS
+  ansible.builtin.service:
+    name: dnsmasq
+    enabled: true
+    state: restarted
+  loop:
+    - name: dnsmasq
+      package_attr: dnsmasq_package
+      service_attr: dnsmasq_service
+    - name: bind
+      package_attr: bind_package
+      service_attr: bind_service
+    - name: unbound
+      package_attr: unbound_package
+      service_attr: unbound_service
+  when: |
+    pm_facts[ansible_pkg_mgr][item.package_attr] in ansible_facts.packages and
+    pm_facts[ansible_pkg_mgr][item.service_attr] in ansible_facts.services and
+    ansible_facts.services[pm_facts[ansible_pkg_mgr][item.service_attr]].status == "enabled"
+- name: Restart local service
+  ansible.builtin.service:
+    name: local
+    enabled: true
+    state: restarted

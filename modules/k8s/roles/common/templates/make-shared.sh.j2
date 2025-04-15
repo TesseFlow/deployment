@@ -1,0 +1,9 @@
+#!/bin/sh
+
+make_shared() {
+{% for shared_mount in shared_mounts %}
+  mount --make-shared {{ shared_mount }}
+{% endfor %}
+}
+
+make_shared $@

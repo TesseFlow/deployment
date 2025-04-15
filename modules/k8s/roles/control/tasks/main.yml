@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Initialize K8S control node
+  ansible.builtin.import_tasks: init.yml
+  when: groups[control_group] | first == inventory_hostname
+
+- name: Join K8S control node
+  ansible.builtin.import_tasks: join.yml
+  when: groups[control_group] | first != inventory_hostname
